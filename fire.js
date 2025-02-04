@@ -39,21 +39,51 @@ document.addEventListener("DOMContentLoaded", function() {
     // Function to determine the color based on the total acres burned
     function getColor(acres) {
         if (acres >= 750000) return "#8B0000";  // DarkRed
-        else if (acres >= 500000) return "#B22222";  // FireBrick
-        else if (acres >= 250000) return "#800000";  // Maroon
+        else if (acres >= 250000) return "#B22222";  // FireBrick
         else if (acres >= 100000) return "#FF0000";  // Red
-        else if (acres >= 50000) return "#FF8C00";  // DarkOrange 
-        else if (acres >= 20000) return "#D2691E";  // Chocolate
+        else if (acres >= 50000) return "#A52A2A";  // Brown
+        else if (acres >= 20000) return "#FF8C00";  // DarkOrange
         else if (acres >= 10000) return "#FFA500";  // Orange
-        else if (acres >= 5000) return "#DAA520";  // GoldenRod
-        else if (acres >= 1000) return "#808000";  // Olive
-        else if (acres >= 500) return "#0000CD";  // MediumBlue
-        else return "#008000";  // Green 
+        else if (acres >= 5000) return "#FFFF00";  // Yellow
+        else return "#008000";  // Green
+    }
+
+    // Function to create the legend
+    function createLegend() {
+        const legendItems = [
+            { label: "> 750,000 acres", value: 750000 },
+            { label: "> 250,000 acres", value: 250000 },
+            { label: "> 100,000 acres", value: 100000 },
+            { label: "> 50,000 acres", value: 50000 },
+            { label: "> 20,000 acres", value: 20000 },
+            { label: "> 10,000 acres", value: 10000 },
+            { label: "> 5,000 acres", value: 5000 },
+            { label: "< 5,000 acres", value: 0 }
+        ];
+
+        const legend = document.getElementById('legend');
+        if (!legend) return;
+
+        legendItems.forEach(item => {
+            const legendItem = document.createElement('div');
+            legendItem.className = 'legend-item';
+
+            const colorBox = document.createElement('div');
+            colorBox.className = 'legend-color';
+            colorBox.style.backgroundColor = getColor(item.value);
+
+            const label = document.createElement('span');
+            label.textContent = item.label;
+
+            legendItem.appendChild(colorBox);
+            legendItem.appendChild(label);
+            legend.appendChild(legendItem);
+        });
     }
 
     // Function to calculate the radius based on the total acres burned
     function getRadius(acres) {
-        const baseRadius = Math.sqrt(acres) * 80;  // Sets the scaling factor
+        const baseRadius = Math.sqrt(acres) * 110;  // Sets the scaling factor
         return baseRadius < 40 ? 40 : baseRadius;  // applies a minimum radius
     }
 
@@ -76,10 +106,7 @@ document.addEventListener("DOMContentLoaded", function() {
         fetch('http://127.0.0.1:5000/data')
         .then(response => response.json())
         .then(data => {
-            if (!data || data.length === 0) {
-                console.error('No valid data fetched.');
-                return;
-            }
+            if (!data || data.length === 0) return;
 
             let fireCount = 0;  // Variable to keep track of the number of fires
 
@@ -124,8 +151,6 @@ document.addEventListener("DOMContentLoaded", function() {
                         // Add interaction layer and circle to the map
                         interactionCircle.addTo(myMap);
                         circle.addTo(myMap);
-                    } else {
-                        console.error("Missing latitude or longitude for item:", item);
                     }
                 }
             });
@@ -138,6 +163,9 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .catch(error => console.error('Error fetching data:', error));
     }
+
+    // Create the legend
+    createLegend();
 
     // Initialize with the first decade option
     fetchDataForDecade('1900s');
