@@ -28,6 +28,8 @@ Web Application: Flask API serving wildfire data.
 
 Interactive Map: Leaflet.js map visualizing fire data by decade.
 
+[Google Slides](https://docs.google.com/presentation/d/10PRHJxYHzHH4yVl10pQoEe522UiQr8c0lNpbePEXb1I/edit#slide=id.g32fed920d04_3_28)
+
 ## Installation
 
 To install and set up our project, these steps must be completed prior to running:
